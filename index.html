@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buddy's Handbook</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9f2f4; --surface:#ffffff; --ink:#14343b; --muted:#4d6a70; --line:#cfe0e4;
+  --c-feed:#f4c95d; --c-walk:#8fd3a8; --c-train:#9cc5f0; --c-health:#f5a3a3; --c-quirk:#c9b3f0; --c-contact:#f5b98a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#10262b;--surface:#1a363d;--ink:#eaf4f5;--muted:#a7c1c6;--line:#2b4a52}
+}
+:root[data-theme="dark"]{--bg:#10262b;--surface:#1a363d;--ink:#eaf4f5;--muted:#a7c1c6;--line:#2b4a52}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Nunito,system-ui,sans-serif;
+  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:Fredoka,Nunito,system-ui,sans-serif;font-weight:600;line-height:1.15;margin:0}
+.wrap{max-width:860px;margin:0 auto;padding:28px 20px 56px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:8px}
+
+/* Home */
+.hero{display:flex;align-items:center;gap:18px;margin-bottom:28px}
+.avatar{width:84px;height:84px;border-radius:50%;background:var(--c-feed);display:grid;place-items:center;font-size:46px;flex:none;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.hero h1{font-size:clamp(2rem,7vw,3rem)}
+.hero p{margin:4px 0 0;color:var(--muted)}
+.search{width:100%;padding:13px 16px;border:2px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{display:block;text-decoration:none;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:20px;
+  position:relative;overflow:hidden;min-height:150px;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.card .badge{width:56px;height:56px;border-radius:16px;background:var(--accent);display:grid;place-items:center;font-size:30px;margin-bottom:14px}
+.card h2{font-size:1.35rem}
+.card p{margin:6px 0 0;color:var(--muted);font-size:.95rem}
+.empty{color:var(--muted);grid-column:1/-1}
+
+/* Detail */
+.back{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--surface);border:2px solid var(--line);text-decoration:none;font-weight:700;margin-bottom:22px}
+.dhead{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.dhead .badge{width:64px;height:64px;border-radius:18px;background:var(--accent);display:grid;place-items:center;font-size:34px;flex:none}
+.dhead h1{font-size:clamp(1.8rem,6vw,2.5rem)}
+.lead{color:var(--muted);margin:0 0 24px}
+.entry{background:var(--surface);border:2px solid var(--line);border-left:8px solid var(--accent);border-radius:16px;padding:16px 20px;margin-bottom:14px}
+.entry h3{font-size:1.2rem;margin-bottom:6px}
+.entry p{margin:0 0 8px;max-width:68ch}
+.entry ul,.entry ol{margin:6px 0 0;padding-left:22px;max-width:68ch}
+.entry li{margin-bottom:4px}
+.entry > :last-child{margin-bottom:0}
+footer{margin-top:40px;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+button.theme{background:none;border:0;color:inherit;font:inherit;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ============================================================
+   EDIT THIS SECTION — everything on the site comes from here.
+   Each category becomes a card; each entry becomes a section
+   on that category's page. "body" can be text; "list" makes
+   bullets; "steps" makes a numbered list.
+   ============================================================ */
+const DOG = {
+  name: "Buddy",
+  tagline: "Everything you need to know about caring for me.",
+  photo: "",   // e.g. "buddy.jpg" (upload the image next to index.html), or leave empty for a paw
+};
+
+const CATEGORIES = [
+  {
+    id: "feeding", icon: "🍖", color: "var(--c-feed)",
+    title: "Feeding", summary: "Meals, treats, and what to avoid.",
+    entries: [
+      { title: "Meal schedule", list: ["Breakfast: 7:30 am, 1 cup", "Dinner: 5:30 pm, 1 cup", "Fresh water always available"] },
+      { title: "Food", body: "Brand and type go here. Mention any slow transition rules if food needs to change." },
+      { title: "Never feed", list: ["Chocolate", "Grapes and raisins", "Onions and garlic", "Anything with xylitol"] },
+    ],
+  },
+  {
+    id: "walks", icon: "🦮", color: "var(--c-walk)",
+    title: "Walks & Play", summary: "Routine, gear, and favorite games.",
+    entries: [
+      { title: "Daily routine", list: ["Morning walk: 30 min", "Afternoon play: 15 min", "Evening stroll: 20 min"] },
+      { title: "Gear", body: "Harness hangs by the front door. Leash is on the hook next to it." },
+      { title: "Favorite games", list: ["Fetch with the tennis ball", "Tug rope", "Hide and seek with treats"] },
+    ],
+  },
+  {
+    id: "training", icon: "🎓", color: "var(--c-train)",
+    title: "Commands & Training", summary: "What I know and how to ask.",
+    entries: [
+      { title: "Commands I know", list: ["Sit", "Stay", "Down", "Come", "Leave it"] },
+      { title: "How to teach a new trick", steps: ["Get a few small treats", "Show the treat, then guide the move", "Say the word as I do it", "Reward right away"] },
+    ],
+  },
+  {
+    id: "health", icon: "🩺", color: "var(--c-health)",
+    title: "Health & Vet", summary: "Medications, vaccines, vet info.",
+    entries: [
+      { title: "Medications", body: "List name, dose, and time. Example: Flea and tick chew on the 1st of each month." },
+      { title: "Vaccines", body: "Last updated: add date. Next due: add date." },
+      { title: "Allergies", body: "None known." },
+    ],
+  },
+  {
+    id: "quirks", icon: "🌀", color: "var(--c-quirk)",
+    title: "Quirks", summary: "The weird stuff that makes me me.",
+    entries: [
+      { title: "Things I do", list: ["Spin three times before lying down", "Sneeze when I'm excited", "Steal one sock, never a pair"] },
+      { title: "Things I fear", body: "Vacuum cleaners and the mailman." },
+    ],
+  },
+  {
+    id: "contacts", icon: "📞", color: "var(--c-contact)",
+    title: "Emergency & Contacts", summary: "Who to call, and what to do.",
+    entries: [
+      { title: "Contacts", list: ["Vet: name, phone", "Emergency vet (24h): name, phone", "Owner: name, phone"] },
+      { title: "If something seems wrong", steps: ["Stay calm and keep me quiet", "Call the vet", "Note what I ate or did", "Head to the emergency vet if told to"] },
+    ],
+  },
+];
+/* ============== END OF EDITABLE SECTION ============== */
+
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function entryHTML(e){
+  let h = `<div class="entry"><h3>${esc(e.title)}</h3>`;
+  if (e.body) h += `<p>${esc(e.body)}</p>`;
+  if (e.list) h += `<ul>${e.list.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`;
+  if (e.steps) h += `<ol>${e.steps.map(i => `<li>${esc(i)}</li>`).join("")}</ol>`;
+  return h + "</div>";
+}
+
+function footer(){
+  return `<footer><span>🐾 ${esc(DOG.name)}'s Handbook</span><button class="theme" id="theme">Toggle dark mode</button></footer>`;
+}
+
+function home(){
+  document.title = `${DOG.name}'s Handbook`;
+  const avatar = DOG.photo ? `<img src="${esc(DOG.photo)}" alt="${esc(DOG.name)}">` : "🐶";
+  app.innerHTML = `
+    <header class="hero">
+      <div class="avatar">${avatar}</div>
+      <div><h1>${esc(DOG.name)}'s Handbook</h1><p>${esc(DOG.tagline)}</p></div>
+    </header>
+    <input class="search" id="q" type="search" placeholder="Search topics" aria-label="Search topics">
+    <div class="grid" id="grid"></div>${footer()}`;
+  const render = q => {
+    const t = q.trim().toLowerCase();
+    const list = CATEGORIES.filter(c => !t || JSON.stringify(c).toLowerCase().includes(t));
+    document.getElementById("grid").innerHTML = list.length
+      ? list.map(c => `<a class="card" href="#/${c.id}" style="--accent:${c.color}">
+          <div class="badge">${c.icon}</div><h2>${esc(c.title)}</h2><p>${esc(c.summary)}</p></a>`).join("")
+      : `<p class="empty">Nothing matches "${esc(q)}". Try a different word.</p>`;
+  };
+  document.getElementById("q").addEventListener("input", e => render(e.target.value));
+  render("");
+}
+
+function detail(c){
+  document.title = `${c.title} · ${DOG.name}'s Handbook`;
+  app.innerHTML = `
+    <a class="back" href="#/">← All topics</a>
+    <div class="dhead" style="--accent:${c.color}"><div class="badge">${c.icon}</div><h1>${esc(c.title)}</h1></div>
+    <p class="lead">${esc(c.summary)}</p>
+    <div style="--accent:${c.color}">${c.entries.map(entryHTML).join("")}</div>${footer()}`;
+}
+
+function route(){
+  const id = location.hash.replace(/^#\/?/, "");
+  const c = CATEGORIES.find(x => x.id === id);
+  c ? detail(c) : home();
+  window.scrollTo(0, 0);
+  document.getElementById("theme").onclick = () => {
+    const r = document.documentElement;
+    const dark = getComputedStyle(r).getPropertyValue("--bg").trim() === "#10262b";
+    r.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("theme", r.dataset.theme); } catch(e){}
+  };
+}
+try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
